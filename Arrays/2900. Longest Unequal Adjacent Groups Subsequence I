@@ -1,0 +1,59 @@
+Problem Description :- (Leetcode Easy)
+--------------------------------------
+You are given a string array words and a binary array groups both of length n.
+A subsequence of words is alternating if for any two consecutive strings in the sequence, 
+their corresponding elements at the same indices in groups are different (that is, there cannot be consecutive 0 or 1).
+Your task is to select the longest alternating subsequence from words.
+Return the selected subsequence. If there are multiple answers, return any of them.
+
+Note: The elements in words are distinct.
+
+Example 1:
+Input: words = ["e","a","b"], groups = [0,0,1]
+Output: ["e","b"]
+Explanation: A subsequence that can be selected is ["e","b"] because groups[0] != groups[2]. 
+             Another subsequence that can be selected is ["a","b"] because groups[1] != groups[2]. 
+             It can be demonstrated that the length of the longest subsequence of indices that satisfies the condition is 2.
+
+Example 2:
+Input: words = ["a","b","c","d"], groups = [1,0,1,1]
+Output: ["a","b","c"]
+Explanation: A subsequence that can be selected is ["a","b","c"] because groups[0] != groups[1] and groups[1] != groups[2]. 
+            Another subsequence that can be selected is ["a","b","d"] because groups[0] != groups[1] and groups[1] != groups[3]. 
+            It can be shown that the length of the longest subsequence of indices that satisfies the condition is 3.
+********************************************************************************************************************************
+Solution :- (Time complexity : O(n), Space complexity : O(n))
+******************Approach :- 1*****************************
+class Solution {
+public:
+    vector<string> getLongestSubsequence(vector<string>& words, vector<int>& groups) {
+        int n = words.size();
+        vector<string> s;
+        s.push_back(words[0]);
+        int res = 0;
+
+        for(int i = 1; i< n; i++){
+            if(groups[i] != groups[res]){
+                s.push_back(words[i]);
+                res = i;
+            }
+        }
+        return s;
+    }
+};
+*****************Approach :- 2******************************
+Time complexity : O(n), Space complexity : O(n
+class Solution {
+public:
+    vector<string> getLongestSubsequence(vector<string>& words, vector<int>& groups) {
+        int n = words.size();
+        vector<string> s;
+        
+        for(int i = 0; i< n; i++){
+            if(i == 0 || groups[i] != groups[i-1]){
+                s.push_back(words[i]);       
+            }
+        }
+        return s;
+    }
+};
