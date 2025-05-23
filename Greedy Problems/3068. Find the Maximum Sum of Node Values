@@ -32,8 +32,10 @@ Input: nums = [7,7,7,7,7,7], k = 3, edges = [[0,1],[0,2],[0,3],[0,4],[0,5]]
 Output: 42
 Explanation: The maximum achievable sum is 42 which can be achieved by Alice performing no operations.
 
-Solution :- (Time Complexity : O(n), Space Complexity : O(1))
--------------------------------------------------------------
+Solution :-
+-----------
+Approach - 1 :- (Time Complexity : O(n), Space Complexity : O(1))
+*****************************************************************
 #include<bits/stdc++.h>
 using namespace std;
 
@@ -84,5 +86,55 @@ int main(){
     cout << sum << endl;
 
     return 0;
+}
+Approach - 2 :- (Time Complexity : O(nlogn), Space Complexity : O(n))
+*********************************************************************
+#include<bits/stdc++.h>
+using namespace std;
 
+class Solution {
+public:
+    typedef long long ll;
+    long long maximumValueSum(vector<int>& nums, int k, vector<vector<int>>& edges) {
+        vector<int> profit;        
+        ll normalsum = 0;
+
+        for(int i = 0; i < nums.size(); i++){
+            normalsum += nums[i];
+            profit.push_back((nums[i]^k) - nums[i]);
+        }
+
+        sort(profit.begin(), profit.end(), greater<int>());
+
+        ll pairsum = 0;
+        for(int i = 0; i < profit.size() - 1; i += 2){
+            pairsum = profit[i] + profit[i+1];
+
+            if(pairsum > 0){
+               normalsum += pairsum;
+            }
+        }
+        return normalsum;
+    }
+};
+int main(){
+    int n;
+    cin >> n;
+    vector<int> nums(n);
+    for (int i = 0; i < n; i++) {
+        cin >> nums[i];
+    }
+
+    int k;
+    cin >> k;
+    vector<vector<int>> edges(n - 1, vector<int>(2));
+    for (int i = 0; i < n - 1; i++) {
+        cin >> edges[i][0] >> edges[i][1];
+    }
+
+    Solution obj;
+    long long sum = obj.maximumValueSum(nums, k, edges);
+    cout << sum << endl;
+
+    return 0;
 }
