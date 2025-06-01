@@ -1,0 +1,137 @@
+=====================================
+Problem Statement : (Leetcode Medium)
+=====================================
+There exist two undirected trees with n and m nodes, with distinct labels in ranges [0, n - 1] and [0, m - 1], respectively.
+You are given two 2D integer arrays edges1 and edges2 of lengths n - 1 and m - 1, respectively, where edges1[i] = [ai, bi] indicates that there is an edge between 
+nodes ai and bi in the first tree and edges2[i] = [ui, vi] indicates that there is an edge between nodes ui and vi in the second tree. You are also given an integer k.
+
+Node u is target to node v if the number of edges on the path from u to v is less than or equal to k. Note that a node is always target to itself.
+
+Return an array of n integers answer, where answer[i] is the maximum possible number of nodes target to node i of the first tree if you have to connect one node from the 
+first tree to another node in the second tree.
+Note that queries are independent from each other. That is, for every query you will remove the added edge before proceeding to the next query.
+
+Example 1:
+==========
+Input: edges1 = [[0,1],[0,2],[2,3],[2,4]], edges2 = [[0,1],[0,2],[0,3],[2,7],[1,4],[4,5],[4,6]], k = 2
+Output: [9,7,9,8,8]
+Explanation:
+For i = 0, connect node 0 from the first tree to node 0 from the second tree.
+For i = 1, connect node 1 from the first tree to node 0 from the second tree.
+For i = 2, connect node 2 from the first tree to node 4 from the second tree.
+For i = 3, connect node 3 from the first tree to node 4 from the second tree.
+For i = 4, connect node 4 from the first tree to node 4 from the second tree.
+
+Example 2:
+==========
+Input: edges1 = [[0,1],[0,2],[0,3],[0,4]], edges2 = [[0,1],[1,2],[2,3]], k = 1
+Output: [6,3,3,3,3]
+Explanation:
+For every i, connect node i of the first tree with any node of the second tree.
+
+===========================================================
+Solution : (Time Complexity :- O(n * min(n, k)), Space Complexity :- Adjacency list: O(n) , Visited array: O(n), Queue: up to O(n) nodes at once, Result vector: O(n)
+So overall : O(n) )
+===========================================================
+
+#include<bit/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int bfs(int curr, unordered_map<int, vector<int>>& adj, int d, int n){
+        queue<pair<int, int>> q;
+        q.push({curr, 0});
+
+        vector<bool> visited(n, false);
+        visited[curr] = true;
+
+        int count = 0;
+
+        while(!q.empty()){
+            int curr_node = q.front().first;
+            int dist = q.front().second;
+            q.pop();
+
+            if(dist > d){
+                continue;
+            }
+            count++;
+
+            for(auto& n : adj[curr_node]){
+                if(!visited[n]){
+                    visited[n] = true;
+                    q.push({n, dist + 1});
+                }
+            }
+        }
+        return count;
+    }
+    vector<int> findcount(vector<vector<int>>& edges, int d){
+        int n = edges.size() + 1;
+
+        unordered_map<int , vector<int>> adj;
+
+        for(auto &edge : edges){
+            int u = edge[0];
+            int v = edge[1];
+
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        vector<int> res(n);
+        for(int i = 0; i < n; i++){
+            res[i] = bfs(i, adj, d, n);
+        }
+        return res;
+    }
+    
+    vector<int> maxTargetNodes(vector<vector<int>>& edges1, vector<vector<int>>& edges2, int k) {
+        int n = edges1.size() + 1;
+
+        vector<int> result1 = findcount(edges1, k);
+        vector<int> result2 = findcount(edges2, k-1);
+
+        int max_target_nodes = *max_element(begin(result2), end(result2));
+
+        for(int i = 0; i < result1.size(); i++){
+            result1[i] += max_target_nodes;
+        } 
+
+        return result1;
+    }
+};
+
+int main() {
+    int n, m, k;
+    cout << "Enter number of nodes in Tree 1 (n): ";
+    cin >> n; //enter n+1 value, lets say you want n = 4 nodes then you enter n = 5.
+    cout << "Enter number of nodes in Tree 2 (m): ";
+    cin >> m; //enter n+1 value, lets say you want m = 4 nodes then you enter m = 5.
+    cout << "Enter value of k: ";
+    cin >> k;
+
+    vector<vector<int>> edges1(n - 1, vector<int>(2));
+    vector<vector<int>> edges2(m - 1, vector<int>(2));
+
+    cout << "Enter " << n - 1 << " edges for Tree 1:\n"; 
+    for (int i = 0; i < n - 1; i++) {
+        cin >> edges1[i][0] >> edges1[i][1];
+    }
+
+    cout << "Enter " << m - 1 << " edges for Tree 2:\n";
+    for (int i = 0; i < m - 1; i++) {
+        cin >> edges2[i][0] >> edges2[i][1];
+    }
+
+    Solution s;
+    vector<int> result = s.maxTargetNodes(edges1, edges2, k);
+
+    cout << "Result:\n";
+    for (int val : result) {
+        cout << val << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
