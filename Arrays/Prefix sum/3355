@@ -1,0 +1,99 @@
+=======================================
+Problem Statement :- (Leetcode Medium)
+=======================================
+You are given an integer array nums of length n and a 2D array queries, where queries[i] = [li, ri].
+For each queries[i]:-
+   -> Select a subset of indices within the range [li, ri] in nums.
+   -> Decrement the values at the selected indices by 1.
+A Zero Array is an array where all elements are equal to 0.
+Return true if it is possible to transform nums into a Zero Array after processing all the queries sequentially, 
+otherwise return false.
+
+Example 1:
+Input: nums = [1,0,1], queries = [[0,2]]
+Output: true
+Explanation:
+For i = 0:
+Select the subset of indices as [0, 2] and decrement the values at these indices by 1.
+The array will become [0, 0, 0], which is a Zero Array.
+
+Example 2:
+Input: nums = [4,3,2,1], queries = [[1,3],[0,2]]
+Output: false
+Explanation:
+For i = 0:
+Select the subset of indices as [1, 2, 3] and decrement the values at these indices by 1.
+The array will become [4, 2, 1, 0].
+For i = 1:
+Select the subset of indices as [0, 1, 2] and decrement the values at these indices by 1.
+The array will become [3, 1, 0, 0], which is not a Zero Array.
+
+Solution : (Time Complexity :- O(Q + n), Space Complexity :- O(Q + n))
+===================================================
++++++++++++++++++++++++++++++++++++++++++++++++++++
+        DIFFERENCE ARRAY TECHNIQUE
++++++++++++++++++++++++++++++++++++++++++++++++++++
+===================================================
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    bool isZeroArray(vector<int>& nums, vector<vector<int>>& queries) {
+        int n = nums.size();
+        vector<int> diff(n, 0);
+
+        for(auto &q : queries){
+            int start = q[0];
+            int end   = q[1];
+            int x     = 1;
+
+            diff[start] += x;
+            if(end + 1 < n){
+                diff[end + 1] -= x;
+            }
+        }
+
+        vector<int> res(n,0); // Prefix sum array h bss naam apne mann ka h
+        int cum_sum = 0;// cummulative sum ko hi prefix sum bolte h, fancy
+        for(int i = 0; i < n; i++){ // terms me.
+            cum_sum += diff[i]; 
+            res[i] = cum_sum;
+        }
+        for(int i = 0; i < n; i++){
+            if(res[i] < nums[i]){
+                return false;
+            }
+        }
+        return true;
+    }
+};
+
+int main()
+{
+    std::cout<<"Hello World"<<endl;;
+    int n;
+    cout<<"Enter the value of n :-"<<endl;
+    cin>>n;
+    
+    vector<int> nums(n);
+    cout<<"Enter the nums array :-"<<endl;
+    for(int i = 0; i < n; i++){
+        cin >>nums[i];
+    }
+    int m , k = 2;
+    cout<<"Enter the value of m :-"<<endl;
+    cin >> m;
+    
+    
+    vector<vector<int>> queries(n, vector<int>(2));
+    cout<<"Enter the queries array :- "<<endl;
+    for(int i = 0; i < m; i++){
+        cin >>queries[i][0] >> queries[i][1];
+    }
+    Solution* obj = new Solution();
+    cout<<"Result :- "<<obj->isZeroArray(nums, queries);
+
+    return 0;
+}
