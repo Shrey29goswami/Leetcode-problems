@@ -45,7 +45,7 @@ int main(){
         cin>>arr[i];
     }
     Solution *obj = new Solution();
-    cout<<"Number of arrays : "<<obj->threeConsecutiveOdds(arr)<<endl;
-    
+    obj->threeConsecutiveOdds(arr) ? cout<<"Yes! Three Consecutive Odds" : cout<<"No! not Three Consecutive Odds";
+
     return 0;
 }
