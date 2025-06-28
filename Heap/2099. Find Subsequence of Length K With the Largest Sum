@@ -1,0 +1,170 @@
+++++++++++++++++++++++++++++++++++++++
+Problem Description : (Leetcode Easy)
+++++++++++++++++++++++++++++++++++++++
+You are given an integer array nums and an integer k. You want to find a subsequence of nums of length k that has the 
+largest sum.
+Return any such subsequence as an integer array of length k.
+A subsequence is an array that can be derived from another array by deleting some or no elements without changing the 
+order of the remaining elements.
+
+Example 1:
+Input: nums = [2,1,3,3], k = 2
+Output: [3,3]
+Explanation:
+The subsequence has the largest sum of 3 + 3 = 6.
+
+Example 2:
+Input: nums = [-1,-2,3,4], k = 3
+Output: [-1,3,4]
+Explanation: 
+The subsequence has the largest sum of -1 + 3 + 4 = 6.
+
+Example 3:
+Input: nums = [3,4,3,3], k = 2
+Output: [3,4]
+Explanation:
+The subsequence has the largest sum of 3 + 4 = 7. 
+Another possible subsequence is [4, 3].
+
+Constraints:
+1 <= nums.length <= 1000
+-10^5 <= nums[i] <= 10^5
+1 <= k <= nums.length
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Solution : (Time Complexity :- O(nlogn), Space Complexity :- O(n))
+***************************************************[C++ 11]*****************************************************************
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    vector<int> maxSubsequence(vector<int>& nums, int k) {
+        int n = nums.size();
+        if (k == n) return nums;
+
+        // Max-heap: {value, index}
+        priority_queue<pair<int, int>> pq;
+        for (int i = 0; i < n; i++) {
+            pq.push(make_pair(nums[i], i));
+        }
+
+        vector<pair<int, int>> topK;
+        while (k-- > 0 && !pq.empty()) {
+            topK.push_back(pq.top());
+            pq.pop();
+        }
+
+        // Sort by original index (to preserve subsequence order)
+        sort(topK.begin(), topK.end(), [](const pair<int, int>& a, const pair<int, int>& b) {
+            return a.second < b.second;
+        });
+
+        // Extract values only
+        vector<int> result;
+        for (int i = 0; i < topK.size(); i++) {
+            result.push_back(topK[i].first);
+        }
+
+        return result;
+    }
+};
+
+int main() {
+    int k;
+    cout << "Enter the value of k: ";
+    cin >> k;
+
+    int n;
+    cout << "Enter the value of n: ";
+    cin >> n;
+
+    vector<int> nums(n);
+    cout << "Enter the nums array elements: ";
+    for (int i = 0; i < n; i++) {
+        cin >> nums[i];
+    }
+
+    Solution* obj = new Solution();
+    vector<int> res = obj->maxSubsequence(nums, k);
+
+    cout << "Subsequence of size k with Largest sum: ";
+    for (int i = 0; i < res.size(); i++) {
+        cout << res[i] << " ";
+    }
+    cout << endl;
+
+    delete obj;
+    return 0;
+}
+
+************************************************[C++ 14/ C++ 17]*************************************************************
+#include<bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    vector<int> maxSubsequence(vector<int>& nums, int k) {
+        int n = nums.size();
+        if(k == n){
+            return nums;
+        }
+        vector<int> result;
+        priority_queue<pair<int, int>, vector<pair<int, int>>> pq;
+
+        for(int i = 0; i < n; i++){
+            pq.push({nums[i], i});
+        }
+        vector<pair<int, int>> topK;
+        while (k-- > 0 && !pq.empty()) {
+            topK.push_back(pq.top());
+            pq.pop();
+        }
+
+        // Sort by index to maintain original order
+        sort(topK.begin(), topK.end(), [](auto& a, auto& b) {
+            return a.second < b.second;
+        });
+
+        // Extract values
+        for (auto& [val, idx] : topK) {
+            result.push_back(val);
+        }
+        
+
+        return result;
+        
+
+        
+    }
+};
+
+int main(){
+    int k;
+    
+    cout << "Enter the value of k: ";
+    cin >> k;
+
+    
+    int n;
+    
+    cout<< "Enter the value of n : ";
+    cin >> n;
+    
+    vector<int> nums(n);
+    cout<< "Enter the nums array elements : ";
+    for(int i = 0; i < n; i++){
+        cin >> nums[i];
+    }
+
+    Solution *obj = new Solution();
+    
+    vector<int> res = obj->maxSubsequence(nums, k);
+    cout<<"Subsequence of size k with Largest sum: ";
+    for (int num : res) {
+        cout << num << " ";
+    }
+    cout << endl;
+    delete obj;
+    return 0;
+}
