@@ -1,0 +1,84 @@
+*****************************************
+Problem Description : (Leetcode Easy)
++++++++++++++++++++++++++++++++++++++++++
+We define a harmonious array as an array where the difference between its maximum value and its minimum value is 
+exactly 1.
+Given an integer array nums, return the length of its longest harmonious subsequence among all its possible subsequences.
+
+Example 1:
+Input: nums = [1,3,2,2,5,2,3,7]
+Output: 5
+Explanation:
+The longest harmonious subsequence is [3,2,2,2,3].
+
+Example 2:
+Input: nums = [1,2,3,4]
+Output: 2
+Explanation:
+The longest harmonious subsequences are [1,2], [2,3], and [3,4], all of which have a length of 2.
+
+Example 3:
+Input: nums = [1,1,1,1]
+Output: 0
+Explanation:
+No harmonic subsequence exists.
+
+Constraints:
+1 <= nums.length <= 2 * 10^4
+-10^9 <= nums[i] <= 10^9
+
+*****************************************************************
+Solution : (Time Complexity :- O(n), Space Complexity :- O(n))
+*****************************************************************
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int findLHS(vector<int>& nums) {
+        int n = nums.size();
+
+        unordered_map<int, int> mp;
+        for(int i = 0; i < n; i++){
+            mp[nums[i]]++;
+        }
+        int maxLen = 0;
+
+        // Check for nums[i] + 1 and update max length
+        for (auto& [num, freq] : mp) {
+            if (mp.find(num + 1) != mp.end()) {
+                int length = freq + mp[num + 1];
+                maxLen = max(maxLen, length);
+            }
+            if (mp.find(num - 1) != mp.end()) {
+                int length = freq + mp[num - 1];
+                maxLen = max(maxLen, length);
+            }
+            
+        }
+
+        return maxLen;
+
+        
+    }
+};
+int main()
+{
+    
+    int n;
+    cout<<"Enter the size of array : ";
+    cin>>n;
+    
+    vector<int> nums(n);
+    cout<<"Enter the nums array elements : ";
+    for(int i = 0; i < n; i++){
+        cin>>nums[i];
+    }
+    
+    Solution* obj = new Solution();
+    
+    cout<<"Size of Longest Harmonious Subsequences : "<<obj->findLHS(nums);
+
+
+    return 0;
+}
