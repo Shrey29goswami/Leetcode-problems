@@ -1,0 +1,349 @@
+***********************************************************************************************************************
+Problem Statement: (Leetcode Hard)
+***********************************************************************************************************************
+Alice is attempting to type a specific string on her computer. However, she tends to be clumsy and may press a key for too 
+long, resulting in a character being typed multiple times.
+
+You are given a string word, which represents the final output displayed on Alice's screen. You are also given a positive 
+integer k.
+Return the total number of possible original strings that Alice might have intended to type, if she was trying to type a 
+string of size at least k.
+Since the answer may be very large, return it modulo 109 + 7.
+
+Example 1:
+Input: word = "aabbccdd", k = 7
+Output: 5
+Explanation:
+The possible strings are: "aabbccdd", "aabbccd", "aabbcdd", "aabccdd", and "abbccdd".
+
+Example 2:
+Input: word = "aabbccdd", k = 8
+Output: 1
+Explanation:
+The only possible string is "aabbccdd".
+
+Example 3:
+Input: word = "aaabbb", k = 3
+Output: 8
+ 
+Constraints:
+1 <= word.length <= 5 * 10^5
+word consists only of lowercase English letters.
+1 <= k <= 2000
+
+*****************************************************************************************************************************
+                                                     SOLUTIONS
+*****************************************************************************************************************************
++++++++++++++++++++++++++++++++++++[ 1. First Intuition (test cases passed :- 634 / 846)] +++++++++++++++++++++++++++++++++++
+#include <bits/stdc++.h>
+using namespace std;
+
+const int m = 1e9+7;
+class Solution {
+public:
+    int solve(int i, int count, vector<int> &freq, int k){
+        if(i > freq.size()-1){
+            if(count < k){
+                return 1;
+            }else{
+                return 0;
+            }
+        }
+        int result = 0;
+        for(int take = 1; take <= freq[i]; take++){
+            if(take + count < k){//invalid
+                result += solve(i+1, count+take, freq, k);
+            }else{
+                break;
+            }
+        }
+        return result;
+    }
+    int possibleStringCount(string word, int k) {
+
+        unordered_map<char , int> freq;
+        for(char c : word){
+            freq[c]++;
+        }
+
+        long long total_combinations = 1;
+        vector<int> v_freq;
+        for(auto& it : freq){
+            total_combinations = (total_combinations * it.second) % m;
+            v_freq.push_back(it.second);
+        }
+
+        if(freq.size() == k){
+            return total_combinations;
+        }
+        long long count = 0;
+        for(int i = 0; i < v_freq.size(); i++){
+            count = solve(0,0,v_freq,k) % m;
+        }
+        return (total_combinations - count) % m;
+
+    }
+};
+int main() {
+    string word;
+    cout << "Enter the string word: ";
+    cin >> word;
+
+    int k;
+    cout << "Enter the value of K: ";
+    cin >> k;
+
+    Solution* obj = new Solution();
+    int result = obj->possibleStringCount(word, k);
+    cout << "Number of possible original count: ";
+    cout << result;
+
+    return 0;
+}
+*****************************************************************************************************************************
+++++++++++++++++++++++++++++++ [2. Better version of the same (test cases passed :- 711/846)] +++++++++++++++++++++++++++++++
+#include <bits/stdc++.h>
+using namespace std;
+
+const int m = 1e9+7;
+class Solution {
+public:
+    int solve(int i, int count, vector<int> &freq, int k){
+        if(i > freq.size()-1){
+            if(count < k){
+                return 1;
+            }else{
+                return 0;
+            }
+        }
+        int result = 0;
+        for(int take = 1; take <= freq[i]; take++){
+            if(take + count < k){//invalid
+                result += solve(i+1, count+take, freq, k);
+            }else{
+                break;
+            }
+        }
+        return result;
+    }
+
+    int possibleStringCount(string word, int k) {
+        int n = word.length();
+        if(k > n){
+            return 0;
+        }
+        vector<int> v_freq;
+        int count = 1;
+        for(int i = 1; i < n; i++){
+            if(word[i] == word[i-1]){
+                count++;
+            }else{
+                v_freq.push_back(count);
+                count = 1;
+            }
+            
+        }
+        v_freq.push_back(count);
+
+        long long total_combinations = 1;
+        for(int& f : v_freq){
+            total_combinations = (total_combinations * f) % m;
+        }
+
+        if(v_freq.size() == k){
+            return total_combinations;
+        }
+        long long invalid = solve(0,0,v_freq,k);
+        
+        return (total_combinations - invalid) % m;
+
+    }
+};
+int main() {
+    string word;
+    cout << "Enter the string word: ";
+    cin >> word;
+
+    int k;
+    cout << "Enter the value of K: ";
+    cin >> k;
+
+    Solution* obj = new Solution();
+    int result = obj->possibleStringCount(word, k);
+    cout << "Number of possible original count: ";
+    cout << result;
+
+    return 0;
+}
+*****************************************************************************************************************************
+++++++++++++++++++++++++++++++ [3. Recursion + Memoization (test cases passed :- 830/846)] +++++++++++++++++++++++++++++++++
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int mod = 1e9+7;
+    vector<vector<int>> memo;
+    //solve function---------------------------------------------------
+    int solve(int i, int count, vector<int>& freq, int k){
+        if(i >= freq.size()){
+            if(count < k){
+                return 1;
+            }else{
+                return 0;
+            }
+        }
+
+        if(memo[i][count] != -1){
+            return memo[i][count];
+        }
+
+        long long result = 0;
+
+        for(int take = 1; take <= freq[i]; take++){
+            if(count + take < k){//invalid
+                result = (result + solve(i+1, count+take, freq, k)) % mod;
+            }else{
+                break;
+            }
+        }
+
+        return memo[i][count] = result;
+    }
+// main function---------------------------------------------------------
+    int possibleStringCount(string word, int k) {
+        int n = word.length();
+        if(k > n){
+            return 0;
+        }
+        vector<int> v_freq;
+        int count = 1;
+        for(int i = 1; i < n; i++){
+            if(word[i] == word[i-1]){
+                count++;
+            }else{
+                v_freq.push_back(count);
+                count = 1;
+            }
+            
+        }
+        v_freq.push_back(count);
+
+        long long total_combinations = 1;
+        for(int& f : v_freq){
+            total_combinations = (total_combinations * f) % mod;
+        }
+        int m = v_freq.size();
+        if(m >= k){
+            return total_combinations;
+        }
+        memo.assign(m + 1, vector<int>(k+1, -1));
+        long long invalid = solve(0,0,v_freq,k);
+        
+        return (total_combinations - invalid + mod) % mod;
+
+    }
+};
+int main() {
+    string word;
+    cout << "Enter the string word: ";
+    cin >> word;
+
+    int k;
+    cout << "Enter the value of K: ";
+    cin >> k;
+
+    Solution* obj = new Solution();
+    int result = obj->possibleStringCount(word, k);
+    cout << "Number of possible original count: ";
+    cout << result;
+
+    return 0;
+}
+*****************************************************************************************************************************
+++++++++++++++++++++++++++++++++++++++ [4. Bottoms up (test cases passed :- 846/846)] ++++++++++++++++++++++++++++++++++++++
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int mod = 1e9+7;
+    
+// main function---------------------------------------------------------
+    int possibleStringCount(string word, int k) {
+        int n = word.length();
+        if(k > n){
+            return 0;
+        }
+        vector<int> v_freq;
+        int count = 1;
+        for(int i = 1; i < n; i++){
+            if(word[i] == word[i-1]){
+                count++;
+            }else{
+                v_freq.push_back(count);
+                count = 1;
+            }
+            
+        }
+        v_freq.push_back(count);
+
+        long long total_combinations = 1;
+        for(int &f : v_freq){
+            total_combinations = (total_combinations * f) % mod;
+        }
+        int m = v_freq.size();
+        if(m >= k){
+            return total_combinations;
+        }
+        
+        vector<vector<int>> memo(m+1, vector<int>(k+1, 0));
+        for(int count = k-1; count >= 0; count--){
+            memo[m][count] = 1;
+        }
+
+        for(int i = m-1; i >= 0; i--){
+            vector<int> prefix(k+1,0);
+            for(int h = 1; h<= k; h++){
+                prefix[h] = (prefix[h-1] + memo[i+1][h-1]) % mod;
+            }
+            for(int count = k-1; count>= 0; count--){
+
+                int l = count + 1;
+                int r = count + v_freq[i];
+
+                if(r+1 > k){
+                    
+                    r = k-1;
+                }
+
+                if(l <= r){
+                    memo[i][count] = (prefix[r+1] - prefix[l] + mod) % mod;
+                }
+            }
+        }
+        
+        long long invalid = memo[0][0];
+        
+        return (total_combinations - invalid + mod) % mod;
+
+    }
+};
+
+int main() {
+    string word;
+    cout << "Enter the string word: ";
+    cin >> word;
+
+    int k;
+    cout << "Enter the value of K: ";
+    cin >> k;
+
+    Solution* obj = new Solution();
+    int result = obj->possibleStringCount(word, k);
+    cout << "Number of possible original count: ";
+    cout << result;
+
+    return 0;
+}
+
