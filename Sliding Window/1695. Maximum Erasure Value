@@ -1,0 +1,131 @@
+**************************************************************************
+Problem Description : (Leetcode Meduim)
+**************************************************************************
+1695. Maximum Erasure Value
+You are given an array of positive integers nums and want to erase a subarray containing unique elements. The score you get 
+by erasing the subarray is equal to the sum of its elements.
+Return the maximum score you can get by erasing exactly one subarray.
+An array b is called to be a subarray of a if it forms a contiguous subsequence of a, that is, if it is equal to 
+a[l],a[l+1],...,a[r] for some (l,r).
+
+Example 1:
+Input: nums = [4,2,4,5,6]
+Output: 17
+Explanation: The optimal subarray here is [2,4,5,6].
+
+Example 2:
+Input: nums = [5,2,1,2,5,2,1,2,5]
+Output: 8
+Explanation: The optimal subarray here is [5,2,1] or [1,2,5].
+ 
+Constraints:
+1 <= nums.length <= 10^5
+1 <= nums[i] <= 10^4
+
+**************************************************************************
+Solution : (Time Complexity :- O(n) , Space Complexity :- O(n))
+**************************************************************************
+/////////////////////////////////// APPROACH ------ 1 (BASIC SLIDING WINDOW) \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+class Solution {
+public:
+    int maximumUniqueSubarray(vector<int>& nums) {
+        unordered_set<int> st;
+        int sum = 0, i = 0, j = 0, result = 0;
+        
+        while(j < nums.size()){
+            if(!st.count(nums[j])){
+                sum += nums[j];
+                result = max(result, sum);
+                st.insert(nums[j]);
+                j++;
+            }else{
+                while(i < nums.size() && st.count(nums[j])){
+                    sum -= nums[i];
+                    st.erase(nums[i]);
+                    i++;
+                }
+            }
+        }
+        return result;
+    }
+};
+
+int main() {
+    int n;
+    cout << "Enter the value of n : ";
+    cin >> n;
+    
+    vector<int> nums(n);
+    cout << "Enter the elements of nums array : ";
+    for(int i = 0; i < n; i++){
+        cin >> nums[i];
+    }
+
+    Solution obj;
+    cout << "MAximum Erased sum :- " << obj.maximumUniqueSubarray(nums);
+
+    return 0;
+}
+
+
+Solution : (Time Complexity :- O(n) , Space Complexity :- O(1))
+**************************************************************************
+/////////////////////////////////// APPROACH ------ 2 (IMPROVED SLIDING WINDOW) \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+class Solution {
+public:
+    int maximumUniqueSubarray(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> cum_sum(n, 0);
+        cum_sum[0] = nums[0];
+
+        for(int i = 1; i < n; i++){
+            cum_sum[i] = cum_sum[i-1] + nums[i];
+        }
+
+        vector<int> mp(10001, -1);
+        int i = 0, j = 0, result = 0;
+    
+        while(j < nums.size()){
+            i = max(i, mp[nums[j]]+1);
+            int jthsum = cum_sum[j];
+            int ithsum = i-1 < 0 ? 0 : cum_sum[i-1];
+
+            result = max(result, jthsum - ithsum);
+        
+            mp[nums[j]] = j;
+            j++;
+        }
+        return result;
+
+    }
+};
+
+int main() {
+    int n;
+    cout << "Enter the value of n : ";
+    cin >> n;
+    
+    vector<int> nums(n);
+    cout << "Enter the elements of nums array : ";
+    for(int i = 0; i < n; i++){
+        cin >> nums[i];
+    }
+
+    Solution obj;
+    cout << "MAximum Erased sum :- " << obj.maximumUniqueSubarray(nums);
+
+    return 0;
+}
+
