@@ -1,0 +1,111 @@
+****************************************************************
+Problem Description : (Leetcode Easy)
+*****************************************************************
+110. Balanced Binary Tree
+Companies : Amazon Spotify Facebook Google Adobe
+
+Given a binary tree, determine if it is height-balanced.
+Example 1:
+Input: root = [3,9,20,null,null,15,7]
+Output: true
+
+Example 2:
+Input: root = [1,2,2,3,3,null,null,4,4]
+Output: false
+
+Example 3:
+Input: root = []
+Output: true
+ 
+Constraints:
+The number of nodes in the tree is in the range [0, 5000].
+-10^4 <= Node.val <= 10^4
+
+****************************************************************
+Solution : (Time Complexity :- O(n), Space Complexity :- O(h))
+*****************************************************************
+
+#include <iostream>
+#include <vector>
+#include <queue>
+using namespace std;
+
+struct TreeNode{
+    int data;
+    TreeNode* left, *right;
+    TreeNode(int val) : data(val), left(nullptr), right(nullptr) {}
+};
+
+class Solution {
+public:
+    TreeNode* buildRoot(vector<string>& nums){
+        if(nums.empty() || nums[0] == "null"){
+            return nullptr;
+        }
+        TreeNode* root = new TreeNode(stoi(nums[0]));
+        queue<TreeNode*> q;
+        q.push(root);
+        
+        size_t i = 1;
+        while(i < nums.size()){
+            TreeNode* temp = q.front();
+            q.pop();
+            
+            if(i < nums.size() && nums[i] != "null"){
+                temp->left = new TreeNode(stoi(nums[i]));
+                q.push(temp->left);
+            }
+            i++;
+            
+            if(i < nums.size() && nums[i] != "null"){
+                temp->right = new TreeNode(stoi(nums[i]));
+                q.push(temp->right);
+            }
+            i++;
+        }
+        return root;
+    }
+    int getSize(TreeNode* root){
+        if(root == nullptr){
+            return 0;
+        }
+        int left = getSize(root->left);
+        int right = getSize(root->right);
+       
+        if(left == -1 || right == -1 || abs(left - right) > 1){
+            return -1;
+        }else{
+            return max(left, right) + 1;
+        }
+    }
+
+    bool isBalanced(TreeNode* root) {
+        if(root == nullptr){
+            return true;
+        }
+        return getSize(root) != -1;
+    }
+};
+int main()
+{
+    int n;
+    cout <<"Enter the number of nodes : ";
+    cin >> n;
+    
+    vector<string> nums(n);
+    cout << "Enter the nums array (null for empty node): ";
+    for(int i = 0; i < n; i++){
+        cin >> nums[i];
+    }
+    
+    Solution obj;
+    TreeNode* root = obj.buildRoot(nums);
+    bool res = obj.isBalanced(root);
+    
+    if(res){
+        cout << "Tree is balanced.";
+    }else{
+        cout << "Tree is not balanced.";
+    }
+    return 0;
+}
