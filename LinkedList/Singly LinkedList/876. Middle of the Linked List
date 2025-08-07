@@ -1,0 +1,114 @@
+************************************************************
+Problem Description : (Leetcode Easy)
+************************************************************
+876. Middle of the Linked List
+Companies : Amazon Adobe Facebook Google Microsoft
+
+Given the head of a singly linked list, return the middle node of the linked list.
+If there are two middle nodes, return the second middle node.
+
+Example 1:
+Input: head = [1,2,3,4,5]
+Output: [3,4,5]
+Explanation: The middle node of the list is node 3.
+
+Example 2:
+Input: head = [1,2,3,4,5,6]
+Output: [4,5,6]
+Explanation: Since the list has two middle nodes with values 3 and 4, we return the second one.
+ 
+Constraints:
+The number of nodes in the list is in the range [1, 100].
+1 <= Node.val <= 100
+
+*****************************************************************
+Solution : 2 Approaches : Using size function , Two pointer
+          (Time Complexity :- O(n), Space Complexity :- O(1))
+*****************************************************************
+
+
+#include <iostream>
+using namespace std;
+
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+ };
+ 
+class Solution {
+public:
+    ListNode* head;
+    Solution(){
+        head = nullptr;
+    }
+    
+    void insert(int v){
+        ListNode* newNode = new ListNode(v);
+        
+        if(!head){
+            head = newNode;
+        }else{
+            ListNode* temp = head;
+            while(temp->next != nullptr){
+                temp = temp->next;
+                
+            }
+            temp->next = newNode;
+        }
+    }
+    
+    int size(ListNode* head){
+        ListNode* temp = head;
+        int count = 0;
+        while(temp != nullptr){
+            count++;
+            temp = temp->next;
+        }
+        return count;
+    }
+    ListNode* middleNode(ListNode* head) {
+        /*int mid = size(head) / 2;
+        ListNode* temp = head;
+        while(mid){
+            temp = temp->next;
+            mid = mid-1;
+        }
+        return temp;*/
+
+
+
+        ListNode* s = head;
+        ListNode* f = head;
+
+        while(f && f->next){
+            s = s->next;
+            f = f->next->next;
+        }
+        return s;
+    }
+};
+
+int main(){
+    int n;
+    cin >> n;
+    
+    Solution obj;
+    for(int i = 0; i < n; i++){
+        int id;
+        cin >> id;
+        
+        obj.insert(id);
+    }
+    ListNode* temp = obj.middleNode(obj.head);
+    while(temp != nullptr){
+        cout << temp->val;
+        if(temp->next != nullptr){
+            cout <<" -> ";
+        }
+        temp = temp->next;
+    }
+    return 0;
+}
