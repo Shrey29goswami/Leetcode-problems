@@ -1,0 +1,121 @@
+**************************************************
+Problem Description : (Leetcode Medium)
+**************************************************
+19. Remove Nth Node From End of List
+Companies : Facebook Amazon Microsoft Google Bloomberg
+
+Given the head of a linked list, remove the nth node from the end of the list and return its head.
+Example 1:
+Input: head = [1,2,3,4,5], n = 2
+Output: [1,2,3,5]
+
+Example 2:
+Input: head = [1], n = 1
+Output: []
+
+Example 3:
+Input: head = [1,2], n = 1
+Output: [1]
+ 
+Constraints:
+The number of nodes in the list is sz.
+1 <= sz <= 30
+0 <= Node.val <= 100
+1 <= n <= sz
+
+*******************************************************************
+Solution : (Time Complexity : O(n), Space Complexity : O(1))
+*******************************************************************
+#include <iostream>
+#include <vector>
+using namespace std;
+ 
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+ };
+ 
+class Solution {
+public:
+    ListNode* head;
+    Solution(){
+        head = nullptr;
+    }
+    
+    void insert(int val){
+        ListNode* newNode = new ListNode(val);
+        if(head == nullptr){
+            head = newNode;
+            return;
+        }
+        
+        ListNode* temp = head;
+        while(temp->next != nullptr){
+            temp = temp->next;
+        }
+        temp->next = newNode;
+    }
+    
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode* temp = new ListNode(0, head);
+        ListNode* fast = temp;
+        ListNode* slow = temp;
+
+        for(int i = 0; i <= n; i++){
+            fast = fast->next;
+        }
+        
+        while(fast != nullptr){
+            fast = fast->next;
+            slow = slow->next;
+        }
+
+        ListNode* del = slow->next;
+        slow->next = del->next;
+        delete del;
+        
+        ListNode* newHead = temp->next;
+        delete temp;
+        return newHead;
+    }
+    
+    void Display(ListNode* head){
+        if(head == nullptr){
+            return;
+        }
+        ListNode* temp = head;
+        while(temp != nullptr){
+            cout << temp->val << " ";
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+};
+
+int main(){
+    int n;
+    cout << "Enter the value of n : ";
+    cin >> n;
+    
+    Solution obj;
+    
+    vector<int> nums(n);
+    cout << "Enter the nodes : ";
+    for(int i = 0; i < n; i++){
+        cin >> nums[i];
+        obj.insert(nums[i]);
+    }
+    
+    int k;
+    cout << "Enter the value of k : ";
+    cin >> k;
+    obj.removeNthFromEnd(obj.head, k);
+    
+    cout << "Resultant List After removing nth node from end : ";
+    obj.Display(obj.head);
+
+    return 0;
+}
