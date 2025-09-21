@@ -1,0 +1,75 @@
+********************************************************
+Problem Description : (Leetcode Easy)
+********************************************************
+383. Ransom Note
+Companies : Spotify Apple Google Adobe
+
+Given two strings ransomNote and magazine, return true if ransomNote can be constructed by using the letters from 
+magazine and false otherwise.
+Each letter in magazine can only be used once in ransomNote.
+
+Example 1:
+Input: ransomNote = "a", magazine = "b"
+Output: false
+
+Example 2:
+Input: ransomNote = "aa", magazine = "ab"
+Output: false
+
+Example 3:
+Input: ransomNote = "aa", magazine = "aab"
+Output: true
+ 
+Constraints:
+1 <= ransomNote.length, magazine.length <= 10^5
+ransomNote and magazine consist of lowercase English letters.
+
+***************************************************************
+Solution : (Time Complexity : O(n), Space Complexity : O(1))
+***************************************************************
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Solution {
+public:
+    bool canConstruct(string ransomNote, string magazine) {
+        int n = ransomNote.size();
+        int m = magazine.size();
+        if(n > m) return false;
+
+
+        
+        vector<int> mp(26, 0);
+        for(char i : magazine){
+            mp[i-'a']++;
+        }
+
+        for(int num : ransomNote){
+            if(mp[num-'a'] == 0){
+                return false;
+            }
+            mp[num-'a']--;
+        }
+
+        return true;
+    }
+};
+
+int main()
+{
+    string s1, s2;
+    cout << "Enter the both strings : "<<endl;
+    cin >> s1 >> s2;
+    
+    Solution ob;
+    if(ob.canConstruct(s1, s2)){
+        cout << "Yes! we can build.";
+    }else{
+        cout << "No! we cannot build.";
+    }
+
+    return 0;
+}
