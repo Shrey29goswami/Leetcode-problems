@@ -1,0 +1,70 @@
+**********************************************************
+Problem Description : (Leetcode Easy)
+**********************************************************
+342. Power of Four
+Companies : Two Sigma
+
+Given an integer n, return true if it is a power of four. Otherwise, return false.
+An integer n is a power of four, if there exists an integer x such that n == 4x.
+
+Example 1:
+Input: n = 16
+Output: true
+
+Example 2:
+Input: n = 5
+Output: false
+
+Example 3:
+Input: n = 1
+Output: true
+
+Constraints:
+-2^31 <= n <= 2^31 - 1
+ 
+
+Follow up: Could you solve it without loops/recursion?
+yes :- 
+Using modulo ->
+bool isPowerOfFour(int n) {
+    return n > 0 && (n & (n - 1)) == 0 && (n % 3 == 1);
+}
+
+*******************************************************************
+Solution : (Time Complexity : O(log n), Space Complexity : O(1))
+*******************************************************************
+
+#include <iostream>
+using namespace std;
+
+class Solution {
+public:
+    bool isPowerOfFour(int n) {
+        if(n == 0) return false;
+        if(n == 1) return true;
+        while(n != 1){
+            if(n % 4 != 0){
+                return false;
+            }
+            n /= 4;
+        }
+        return true;
+    }
+};
+
+int main()
+{
+    int n;
+    cout << "Enter the value of n : ";
+    cin >> n;
+    
+    Solution ob;
+    if(ob.isPowerOfFour(n)){
+        cout << "Yes! it is power of 4.";
+    }
+    else{
+        cout << "No! it is not power of 4.";
+    }
+
+    return 0;
+}
