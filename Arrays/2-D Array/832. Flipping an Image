@@ -29,7 +29,7 @@ n == image[i].length
 images[i][j] is either 0 or 1.
 
 *********************************************************************
-Solution : (Time Complexity : O(log n) , Space Complexity : O(1))
+Solution : (Time Complexity : O(n*n) , Space Complexity : O(1))
 *********************************************************************
 #include <iostream>
 #include <vector>
@@ -66,10 +66,10 @@ int main() {
     }
     
     Solution ob;
-    vector<vector<int>> ans = ob.flipAndInvertImage(nums);
+    ob.flipAndInvertImage(nums);
     for(int i = 0; i < n; i++){
         for(int j = 0; j < n; j++){
-            cout << ans[i][j] << " ";
+            cout << nums[i][j] << " ";
         }
         cout <<endl;
     }
