@@ -53,7 +53,7 @@ public:
 int main() {
     string s;
     cout << "Enter the string : ";
-    cin >> s;
+    getline(cin, s);
     
     Solution ob;
     cout << "Length of the last word : "<< ob. lengthOfLastWord(s);
