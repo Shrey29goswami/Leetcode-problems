@@ -55,12 +55,7 @@ public:
 
         for(int i = 0; i < n; i++){
             int maxCandies = *max_element(candies.begin(), candies.end());
-            if(candies[i]+extraCandies >= maxCandies){
-                result[i] = true;
-                
-            }else {
-                result[i] = false;
-            }
+            result[i] = (candies[i]+extraCandies >= maxCandies);
         }
 
         return result;
