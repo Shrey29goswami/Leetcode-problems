@@ -44,31 +44,26 @@ Solution : (Time Complexity : O(n), Space Complexity : O(n))
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 class Solution {
 public:
     vector<bool> kidsWithCandies(vector<int>& candies, int extraCandies) {
         int n = candies.size();
-        vector<bool> arr(n);
-
-        int high = candies[0];
-        for(int i = 1; i < n; i++){
-            if(candies[i] > high){
-                high = candies[i];
-            }
-        }
+        vector<bool> result(n);
 
         for(int i = 0; i < n; i++){
-            if(candies[i]+extraCandies >= high){
-                arr[i] = true;
+            int maxCandies = *max_element(candies.begin(), candies.end());
+            if(candies[i]+extraCandies >= maxCandies){
+                result[i] = true;
                 
             }else {
-                arr[i] = false;
+                result[i] = false;
             }
         }
 
-        return arr;
+        return result;
     }
 };
 int main()
@@ -76,16 +71,16 @@ int main()
     int n;
     cin >> n;
     
-    vector<int> arr(n);
+    vector<int> result(n);
     for(int i = 0; i < n; i++){
-        cin >> arr[i];
+        cin >> result[i];
     }
     
     int m;
     cin >> m;
     
     Solution s;
-    vector<bool> res = s.kidsWithCandies(arr, m);
+    vector<bool> res = s.kidsWithCandies(result, m);
     for(auto x : res){
         if(x == 1) cout <<"True" <<" ";
         else cout << "False" <<" ";
